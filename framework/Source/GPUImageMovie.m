@@ -223,8 +223,6 @@
     {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:YES];
-#else
-#warning Missing OSX implementation
 #endif
         
         // This might need to be extended to handle movies with more than one audio track
@@ -266,16 +264,20 @@
     if (synchronizedMovieWriter != nil)
     {
         [synchronizedMovieWriter setVideoInputReadyCallback:^{
-            BOOL success = [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+            BOOL success = [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
             return success;
+#else 
+            [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
 #endif
         }];
 
         [synchronizedMovieWriter setAudioInputReadyCallback:^{
-            BOOL success = [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+             BOOL success = [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
             return success;
+#else 
+            [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
 #endif
         }];
         
